@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+google-cloud-vision
+python-multipart
+pillow
+cachetools
+slowapi
+redis
+
