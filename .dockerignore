@@ -1,0 +1,15 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env.*
+logs/
+*.log
+*.sqlite3
+tests/
+tests/images
+*.jpg
+*.png
+*.gif
+*.jpeg

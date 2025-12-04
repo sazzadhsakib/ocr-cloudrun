@@ -1,18 +1,27 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Response
+from fastapi import APIRouter, UploadFile, File, HTTPException, Response, Request
 from typing import List
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from src.services.ocr_service import process_single_image, process_batch_images
 from src.models.response_models import SingleOCRResponse, BatchOCRResponse
 from src.services.cache_service import get_cache
-from src.utils.hashing import sha256_bytes
+from src.config import settings
 
 router = APIRouter()
 
+# Initialize limiter
+limiter = Limiter(key_func=get_remote_address)
+
 
 @router.post("/extract-text", response_model=SingleOCRResponse)
-async def extract_text(response: Response, image: UploadFile = File(...)):
+@limiter.limit(settings.RATE_LIMIT_SINGLE)
+async def extract_text(
+    request: Request, response: Response, image: UploadFile = File(...)
+):
     """
     Process a single image and return OCR result.
     Adds cache headers if available.
+    Rate limited to 100 requests per minute per IP.
     """
     try:
         contents = await image.read()
@@ -34,11 +43,15 @@ async def extract_text(response: Response, image: UploadFile = File(...)):
 
 
 @router.post("/batch-extract", response_model=BatchOCRResponse)
-async def batch_extract(response: Response, images: List[UploadFile] = File(...)):
+@limiter.limit(settings.RATE_LIMIT_BATCH)
+async def batch_extract(
+    request: Request, response: Response, images: List[UploadFile] = File(...)
+):
     """
     Process multiple images in batch.
     Returns 207 Multi-Status if some images fail.
     Adds consolidated cache headers.
+    Rate limited to 20 requests per minute per IP.
     """
     try:
         timestamps = []
@@ -65,3 +78,10 @@ async def batch_extract(response: Response, images: List[UploadFile] = File(...)
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/health")
+@limiter.exempt  # Exempt health checks from rate limiting
+async def health_check():
+    """Health check endpoint - not rate limited"""
+    return {"status": "healthy", "service": "ocr-api"}
