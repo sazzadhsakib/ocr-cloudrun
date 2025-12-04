@@ -1,8 +1,9 @@
 from cachetools import TTLCache
 from src.utils.hashing import sha256_bytes
-from datetime import datetime
+from datetime import datetime, timezone
+from src.config import settings
 
-cache = TTLCache(maxsize=200, ttl=3600)  # 1 hour cache
+cache = TTLCache(maxsize=settings.CACHE_MAXSIZE, ttl=settings.CACHE_TTL)
 
 
 def get_cache(image_bytes: bytes):
@@ -12,8 +13,5 @@ def get_cache(image_bytes: bytes):
 
 def set_cache(image_bytes: bytes, result: dict):
     key = sha256_bytes(image_bytes)
-    result_with_meta = {
-        **result,
-        "_cached_at": datetime.utcnow().isoformat()
-    }
+    result_with_meta = {**result, "_cached_at": datetime.now(timezone.utc).isoformat()}
     cache[key] = result_with_meta
