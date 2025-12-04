@@ -53,6 +53,12 @@ async def batch_extract(
     Adds consolidated cache headers.
     Rate limited to 20 requests per minute per IP.
     """
+    if len(images) > settings.MAX_BATCH_FILES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"Too many files uploaded. Maximum allowed is {settings.MAX_BATCH_FILES}.",
+        )
+
     try:
         timestamps = []
         for img in images:
