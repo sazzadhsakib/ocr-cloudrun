@@ -1,15 +1,12 @@
 from PIL import Image
 import io
 
-
-def extract_metadata(raw_bytes: bytes, original_format: str):
+def extract_metadata(raw_bytes: bytes, original_format: str, mimetype: str):
     """
     Extract image metadata for OCR.
-    Args:
-        raw_bytes: preprocessed image bytes (JPEG for Vision API)
-        original_format: format of the original uploaded image (PNG, GIF, JPEG, etc.)
-    Returns:
-        dict containing width, height, and original format
+    raw_bytes: preprocessed bytes (JPEG for Vision)
+    original_format: original uploaded format (PNG, GIF, etc.)
+    mimetype: original uploaded mimetype (image/png etc.)
     """
     img = Image.open(io.BytesIO(raw_bytes))
-    return {"width": img.width, "height": img.height, "format": original_format}
+    return {"width": img.width, "height": img.height, "format": original_format, "mimetype": mimetype}
