@@ -10,7 +10,7 @@ A **FastAPI-based OCR service** leveraging the **Google Vision API**. It support
   * **Batch Image OCR**: Process multiple images in one request, supporting **partial failures** with a `207 Multi-Status` response.
   * **Image Validation**: Enforces limits on file size (**Max 10 MB**), GIF size (**Max 10 MB**), and GIF frames (**Max 50**), files count(**Max 10**) for batch processing
   * **Preprocessing**: Includes **contrast enhancement** and ensures consistency by converting images to JPEG before OCR.
-  * **Caching**: Utilizes an **in-memory cache** with a TTL (`CACHE_TTL=3600s`) to reuse results and improve performance.
+  * **Caching**: Utilizes an **in-memory cache** with a TTL (`CACHE_TTL=7200s`) to reuse results and improve performance.
   * **Rate Limiting**:
       * Single image: 60 requests/min per IP.
       * Batch image: 30 requests/min per IP.
