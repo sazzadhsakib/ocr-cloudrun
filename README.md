@@ -41,6 +41,14 @@ This project adheres to **Clean Architecture** principles and implements **SOLID
 
 `POST /v1/extract-text`
 
+Test Single Image OCR
+
+```bash
+# Replace the path with a valid image path on your local machine
+curl --location 'https://ocr-service-240440546630.us-central1.run.app/v1/extract-text' \
+--form 'image=@"/C:/Users/sazzad/Downloads/invoice2x.jpg"'
+```
+
 | Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
 | **image** | file | Yes | The image file for OCR (JPEG, PNG, GIF). |
@@ -65,6 +73,17 @@ This project adheres to **Clean Architecture** principles and implements **SOLID
 ### 2\. Batch Image OCR
 
 `POST /v1/batch-extract`
+
+```bash
+# Replace the path with a valid image path on your local machine
+curl --location 'https://ocr-service-240440546630.us-central1.run.app/v1/batch-extract' \
+--header 'accept: application/json' \
+--form 'images=@"/C:/Users/sazzad/Downloads/book page.jpg"' \
+--form 'images=@"/C:/Users/sazzad/Downloads/inguodo-inc.jpg"' \
+--form 'images=@"/C:/Users/sazzad/Downloads/book.jpg"'
+
+````
+
 
 | Field | Type | Required | Description |
 | :--- | :--- | :--- | :--- |
