@@ -14,13 +14,21 @@ limiter = Limiter(
     headers_enabled=True,
 )
 
-app = FastAPI(title="OCR Cloud Run API", version="1.0.0")
+# Disable Swagger / ReDoc / OpenAPI docs for production
+app = FastAPI(
+    title="OCR Cloud Run API",
+    version="1.0.0",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
+)
 
 app.state.limiter = limiter
 
 # Use custom rate limit handler
 app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
+# Include API router
 app.include_router(api_router, prefix="/v1")
 
 
